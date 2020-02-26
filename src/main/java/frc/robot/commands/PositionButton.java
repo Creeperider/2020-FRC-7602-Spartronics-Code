@@ -6,14 +6,14 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.robot.subsystems.Hoppersubsystem;
+import frc.robot.subsystems.HopperPos;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
-public class HopperIntake extends Command {
-  public HopperIntake() {
+public class PositionButton extends Command {
+  private static final double POSITION_STOP = 2.2;
+  private boolean isFinished = false;
+  public PositionButton() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -21,34 +21,29 @@ public class HopperIntake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    System.out.println("Trigger: " + Robot.m_oi.trigger.get());
-    System.out.println("out: " + Robot.m_oi.button3.get());
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println("EXE: " + Robot.m_oi.trigger.get());
-    System.out.println("EXE#: " + Robot.m_oi.button3.get());
-// if(Robot.m_oi.stick.getTrigger()){
-      Hoppersubsystem.HopperIn.set(ControlMode.PercentOutput, -.60);
-  //  } else {
-       
- //   }
+  if (HopperPos.encoder.getPosition()>POSITION_STOP){
+ // HopperPos.HopperPost.set(-.1);
+ isFinished = true;
+  }else{ 
+  HopperPos.HopperPost.set(.1);
   }
+}
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.m_oi.stick.getTrigger();
+    return isFinished;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    System.out.println("End: " + Robot.m_oi.trigger.get());
-    System.out.println("End#: " + Robot.m_oi.button3.get());
-    Hoppersubsystem.HopperIn.set(ControlMode.PercentOutput, 0);
+    isFinished = false;
   }
 
   // Called when another command which requires one or more of the same

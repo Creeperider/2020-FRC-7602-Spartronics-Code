@@ -23,8 +23,8 @@ public class DriveSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-private VictorSPX RightBDrive, RightFDrive;
-private VictorSPX LeftBDrive, LeftFDrive;
+public static VictorSPX RightBDrive, RightFDrive;
+public static VictorSPX LeftBDrive, LeftFDrive;
 
 public DriveSubsystem() {
   RightBDrive = new VictorSPX(RobotMap.RightBDrive);
@@ -32,19 +32,21 @@ public DriveSubsystem() {
   LeftBDrive = new VictorSPX(RobotMap.LeftBDrive);
   LeftFDrive = new VictorSPX(RobotMap.LeftFDrive);
 
-  RightBDrive.setInverted(true);
-  RightFDrive.setInverted(true);
+  RightBDrive.setInverted(false);
+  RightFDrive.setInverted(false);
+  LeftBDrive.setInverted(true);
+  LeftFDrive.setInverted(true);
 }
 
 public void drive(double forwardPower, double turnPower){
-  System.out.println("forward:" + forwardPower + " turn:" + turnPower);
-  if (Math.abs(turnPower)<.25){
+ // System.out.println("forward:" + forwardPower + " turn:" + turnPower);
+  if (Math.abs(turnPower)<.15){
     turnPower = 0;
   }
-  RightBDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, - turnPower);
-  RightFDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward,  - turnPower);
-  LeftBDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, + turnPower);
-  LeftFDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, + turnPower);
+  RightBDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, + turnPower);
+  RightFDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, + turnPower);
+  LeftBDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, - turnPower);
+  LeftFDrive.set(ControlMode.PercentOutput,forwardPower, DemandType.ArbitraryFeedForward, - turnPower);
 }
 
   @Override

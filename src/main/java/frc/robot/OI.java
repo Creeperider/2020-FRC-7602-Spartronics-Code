@@ -24,6 +24,13 @@ public class OI {
   public Joystick stick = new Joystick(0);
   public Button trigger = new JoystickButton(stick, 1);
   public Button button3 = new JoystickButton(stick, 3);
+  public Button button7 = new JoystickButton(stick, 7);
+  public Button button8 = new JoystickButton(stick, 8);
+  public Button button11 = new JoystickButton(stick, 11);
+
+  public Button button10 = new JoystickButton(stick, 10);
+  public Button button12 = new JoystickButton(stick, 12);
+
   //public VictorSPX HopperIn = new VictorSPX(RobotMap.HopperIn);
   // There are a few additional built in buttons you can use. Additionally,
   // by subclassing Button you can create custom triggers and bind those to

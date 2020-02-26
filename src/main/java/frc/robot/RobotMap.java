@@ -19,7 +19,9 @@ public class RobotMap {
   public static final int RightFDrive = 4;
   public static final int RightBDrive = 1;
   public static final int HopperIn = 5;
-
+  public static final int HopperPost = 6; // SparkMAX
+  public static final int CLIMBER = 7; // SparkMAX
+ // public static final int 
   
   // For example to map the left and right motors, you could define the
   // following variables to use with your drivetrain subsystem.

@@ -7,18 +7,25 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Hoppersubsystem;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.AutonomousCommand;
+import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.HopperDown;
 import frc.robot.commands.HopperIntake;
 import frc.robot.commands.HopperOut;
-
+import frc.robot.commands.HopperUp;
+import frc.robot.commands.PositionButton;
+import frc.robot.commands.PrepClimberCommand;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HopperPos;
+import frc.robot.subsystems.Hoppersubsystem;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -27,12 +34,14 @@ import frc.robot.commands.HopperOut;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   public static DriveSubsystem drivesubsystem = new DriveSubsystem();
   public static Hoppersubsystem hoppersubsystem = new Hoppersubsystem();
+  public static HopperPos Hopperpos = new HopperPos();
   public static OI m_oi;
 
   Command m_autonomousCommand;
+  Command m_AutonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
@@ -42,11 +51,21 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
     Robot.m_oi.trigger.whenPressed(new HopperIntake());
     Robot.m_oi.button3.whileHeld(new HopperOut());
+    Robot.m_oi.button8.whileHeld(new HopperUp());
+    Robot.m_oi.button7.whileHeld(new HopperDown());
+   // Robot.m_oi.button11.whenPressed(new PositionButton());
+
+    // Buttons 10 & 12 are used for the climber.  Button 12 can ONLY be used
+    // when the climber lock is disengaged.
+    Robot.m_oi.button10.whileHeld(new ClimbCommand(climberSubsystem));
+    Robot.m_oi.button12.whileHeld(new PrepClimberCommand(climberSubsystem));
+
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setDouble(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setDouble(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setDouble(0);
   }
 
   /**
@@ -89,13 +108,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
-
-    /*
-     * String autoSelected = SmartDashboard.getString("Auto Selector",
-     * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-     * = new MyAutoCommand(); break; case "Default Auto": default:
-     * autonomousCommand = new ExampleCommand(); break; }
-     */
+    
+      String autoSelected = SmartDashboard.getString("Auto mode",
+      "Drive"); switch(autoSelected) { case "My Auto": m_autonomousCommand
+      = new AutonomousCommand(); break; case "Default Auto": default:
+      m_AutonomousCommand = new AutonomousCommand(); break; }
+     
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -120,6 +138,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    HopperPos.encoder.setPosition(0);
   }
 
   /**
@@ -127,7 +146,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    System.out.println("encoder " + HopperPos.encoder.getPosition());
     Scheduler.getInstance().run();
+
   }
 
   /**

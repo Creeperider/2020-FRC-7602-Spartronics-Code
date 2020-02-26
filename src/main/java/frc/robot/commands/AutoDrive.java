@@ -6,14 +6,14 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Hoppersubsystem;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+public class AutoDrive extends Command {
+  public AutoDrive() {
 
-public class HopperIntake extends Command {
-  public HopperIntake() {
+    requires(Robot.drivesubsystem);
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -21,39 +21,29 @@ public class HopperIntake extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    System.out.println("Trigger: " + Robot.m_oi.trigger.get());
-    System.out.println("out: " + Robot.m_oi.button3.get());
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    System.out.println("EXE: " + Robot.m_oi.trigger.get());
-    System.out.println("EXE#: " + Robot.m_oi.button3.get());
-// if(Robot.m_oi.stick.getTrigger()){
-      Hoppersubsystem.HopperIn.set(ControlMode.PercentOutput, -.60);
-  //  } else {
-       
- //   }
+    Robot.drivesubsystem.drive(.25, 0);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.m_oi.stick.getTrigger();
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    System.out.println("End: " + Robot.m_oi.trigger.get());
-    System.out.println("End#: " + Robot.m_oi.button3.get());
-    Hoppersubsystem.HopperIn.set(ControlMode.PercentOutput, 0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }
