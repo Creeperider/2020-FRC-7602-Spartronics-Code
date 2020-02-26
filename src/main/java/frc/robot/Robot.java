@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.AutonomousCommand;
+import frc.robot.commands.AutoCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.HopperDown;
 import frc.robot.commands.HopperIntake;
@@ -41,8 +42,8 @@ public class Robot extends TimedRobot {
   public static OI m_oi;
 
   Command m_autonomousCommand;
-  Command m_AutonomousCommand;
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  Command m_AutoCommand;
+  SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -51,8 +52,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
+    m_chooser.addOption("Auto mode", "My Auto");
+    m_chooser.addOption("Fancy", "Fancy");
     SmartDashboard.putData("Auto mode", m_chooser);
-    Robot.m_oi.trigger.whenPressed(new HopperIntake());
+    Robot.m_oi.Hout.whenPressed(new HopperIntake());
     Robot.m_oi.button3.whileHeld(new HopperOut());
     Robot.m_oi.button8.whileHeld(new HopperUp());
     Robot.m_oi.button7.whileHeld(new HopperDown());
@@ -107,12 +110,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_chooser.getSelected();
-    
-      String autoSelected = SmartDashboard.getString("Auto mode",
-      "Drive"); switch(autoSelected) { case "My Auto": m_autonomousCommand
-      = new AutonomousCommand(); break; case "Default Auto": default:
-      m_AutonomousCommand = new AutonomousCommand(); break; }
+   // m_autonomousCommand = m_chooser.getSelected();
+      String autoSelected =  m_chooser.getSelected();//.getString("Auto mode","Drive");
+       switch(autoSelected) { 
+         case "My Auto": m_AutoCommand
+      = new AutoCommand();
+      break; case "Fancy": default:
+      m_AutoCommand = new AutoCommand(); break; }
      
 
     // schedule the autonomous command (example)

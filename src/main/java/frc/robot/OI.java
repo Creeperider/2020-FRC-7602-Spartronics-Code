@@ -22,11 +22,13 @@ public class OI {
   // Joystick stick = new Joystick(port);
   // Button button = new JoystickButton(stick, buttonNumber);
   public Joystick stick = new Joystick(0);
+  public Joystick Gamepad = new Joystick(1);
   public Button trigger = new JoystickButton(stick, 1);
-  public Button button3 = new JoystickButton(stick, 3);
-  public Button button7 = new JoystickButton(stick, 7);
-  public Button button8 = new JoystickButton(stick, 8);
+  public Button button3 = new JoystickButton(Gamepad, 2);
+  public Button button7 = new JoystickButton(Gamepad, 5);
+  public Button button8 = new JoystickButton(Gamepad, 6);
   public Button button11 = new JoystickButton(stick, 11);
+  public Button Hout = new JoystickButton(Gamepad, 1);
 
   public Button button10 = new JoystickButton(stick, 10);
   public Button button12 = new JoystickButton(stick, 12);
